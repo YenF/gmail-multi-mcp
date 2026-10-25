@@ -1,0 +1,42 @@
+{
+  "name": "gmail-multi-mcp",
+  "version": "1.0.0",
+  "description": "Multi-account Gmail Model Context Protocol (MCP) server with per-account permission control, parallel cross-account search, and CLI auth.",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "gmail-multi-mcp": "dist/index.js"
+  },
+  "files": [
+    "dist",
+    "skills",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "gmail",
+    "google-workspace",
+    "multi-account",
+    "ai",
+    "antigravity",
+    "claude"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.6.1",
+    "googleapis": "^144.0.0",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.0",
+    "typescript": "^5.7.3"
+  }
+}
