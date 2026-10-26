@@ -91,10 +91,10 @@ export async function handleAuthAdd(options: {
   const code = await new Promise<string>((resolve, reject) => {
     server.on('request', async (req, res) => {
       try {
-        const parsedUrl = url.parse(req.url || '', true);
+        const parsedUrl = new URL(req.url || '', `http://127.0.0.1:${port}`);
         if (parsedUrl.pathname === '/oauth2callback') {
-          const authCode = parsedUrl.query.code as string;
-          const authError = parsedUrl.query.error as string;
+          const authCode = parsedUrl.searchParams.get('code');
+          const authError = parsedUrl.searchParams.get('error');
 
           if (authError) {
             res.writeHead(400, { 'Content-Type': 'text/html; charset=utf-8' });

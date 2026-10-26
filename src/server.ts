@@ -12,6 +12,7 @@ import {
   modifyEmail,
   trashEmail,
   listLabels,
+  createLabel,
 } from './gmail-client.js';
 
 export async function runServer(): Promise<void> {
@@ -386,6 +387,34 @@ export async function runServer(): Promise<void> {
         return {
           isError: true,
           content: [{ type: 'text', text: `List labels error: ${err.message}` }],
+        };
+      }
+    }
+  );
+
+  // 11. create_label
+  server.tool(
+    'create_label',
+    'Create a new user label in a specific Gmail account.',
+    {
+      account: z.string().describe('Account alias or email address.'),
+      name: z.string().describe('Name of the new label to create.'),
+    },
+    async ({ account, name }) => {
+      try {
+        const result = await createLabel(account, name);
+        return {
+          content: [
+            {
+              type: 'text',
+              text: `✓ Created label "${result.name}" (ID: ${result.id}) in account "${result.account}".`,
+            },
+          ],
+        };
+      } catch (err: any) {
+        return {
+          isError: true,
+          content: [{ type: 'text', text: `Create label error: ${err.message}` }],
         };
       }
     }

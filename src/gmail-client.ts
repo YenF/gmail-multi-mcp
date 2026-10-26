@@ -446,6 +446,53 @@ export async function sendEmail(
   };
 }
 
+export async function createLabel(accountIdent: string, name: string) {
+  const account = resolveAccount(accountIdent);
+  const gmail = getGmailService(account);
+
+  const res = await gmail.users.labels.create({
+    userId: 'me',
+    requestBody: {
+      name,
+      labelListVisibility: 'labelShow',
+      messageListVisibility: 'show',
+    },
+  });
+
+  return {
+    account: account.alias,
+    id: res.data.id || '',
+    name: res.data.name || name,
+  };
+}
+
+async function resolveLabelId(gmail: gmail_v1.Gmail, labelNameOrId: string, autoCreate: boolean = false): Promise<string> {
+  const listRes = await gmail.users.labels.list({ userId: 'me' });
+  const labels = listRes.data.labels || [];
+
+  // Match by exact ID
+  const byId = labels.find((l) => l.id === labelNameOrId);
+  if (byId && byId.id) return byId.id;
+
+  // Match by case-insensitive name
+  const byName = labels.find((l) => l.name && l.name.toLowerCase() === labelNameOrId.toLowerCase());
+  if (byName && byName.id) return byName.id;
+
+  if (autoCreate) {
+    const createRes = await gmail.users.labels.create({
+      userId: 'me',
+      requestBody: {
+        name: labelNameOrId,
+        labelListVisibility: 'labelShow',
+        messageListVisibility: 'show',
+      },
+    });
+    return createRes.data.id || labelNameOrId;
+  }
+
+  return labelNameOrId;
+}
+
 export async function modifyEmail(
   accountIdent: string,
   messageId: string,
@@ -455,12 +502,26 @@ export async function modifyEmail(
   const account = resolveAccount(accountIdent);
   const gmail = getGmailService(account);
 
+  const resolvedAdd: string[] = [];
+  if (addLabels && addLabels.length > 0) {
+    for (const l of addLabels) {
+      resolvedAdd.push(await resolveLabelId(gmail, l, true));
+    }
+  }
+
+  const resolvedRemove: string[] = [];
+  if (removeLabels && removeLabels.length > 0) {
+    for (const l of removeLabels) {
+      resolvedRemove.push(await resolveLabelId(gmail, l, false));
+    }
+  }
+
   const res = await gmail.users.messages.modify({
     userId: 'me',
     id: messageId,
     requestBody: {
-      addLabelIds: addLabels || [],
-      removeLabelIds: removeLabels || [],
+      addLabelIds: resolvedAdd,
+      removeLabelIds: resolvedRemove,
     },
   });
 
