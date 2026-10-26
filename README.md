@@ -126,9 +126,10 @@ npx gmail-multi-mcp auth set-permission work draft
 | `download_attachment` | `account`, `message_id`, `attachment_id`, `filename`, `destination_dir` | Downloads an email attachment to a local folder. |
 | `create_draft` | `account`, `to`, `subject`, `body`, `cc?`, `bcc?`, `attachments?`, `thread_id?` | Creates a draft email with optional local file attachments. |
 | `send_email` | `account`, `to`, `subject`, `body`, `cc?`, `bcc?`, `attachments?`, `thread_id?` | Directly sends an email or replies to a thread (blocked if account is not `full`). |
-| `modify_email` | `account`, `message_id`, `add_labels?`, `remove_labels?` | Adds or removes labels (e.g. mark read, archive). |
+| `modify_email` | `account`, `message_id`, `add_labels?`, `remove_labels?` | Adds or removes labels (e.g. mark read, archive). Accepts label names or IDs. |
 | `trash_email` | `account`, `message_id` | Moves an email to Gmail Trash (recoverable for 30 days). |
 | `list_labels` | `account` | Lists all labels in an account. |
+| `create_label` | `account`, `name` | Creates a new user label in an account. |
 
 ---
 
