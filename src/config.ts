@@ -16,6 +16,11 @@ export function getBaseDir(): string {
 }
 
 export function getDefaultOAuthKeyPath(): string {
+  const preferred = path.join(getBaseDir(), 'gcp_client_secret.json');
+  if (fs.existsSync(preferred)) {
+    return preferred;
+  }
+  // Backwards compatibility with gcp-oauth.keys.json
   return path.join(getBaseDir(), 'gcp-oauth.keys.json');
 }
 

@@ -40,8 +40,8 @@ To access the Gmail API, you need a Google Cloud OAuth Desktop Client:
    ```bash
    mkdir -p ~/.gmail-multi-mcp
    chmod 700 ~/.gmail-multi-mcp
-   mv ~/Downloads/client_secret_*.json ~/.gmail-multi-mcp/gcp-oauth.keys.json
-   chmod 600 ~/.gmail-multi-mcp/gcp-oauth.keys.json
+   mv ~/Downloads/client_secret_*.json ~/.gmail-multi-mcp/gcp_client_secret.json
+   chmod 600 ~/.gmail-multi-mcp/gcp_client_secret.json
    ```
 
 ---
@@ -157,7 +157,7 @@ All local tokens and configuration files are stored outside project directories:
 
 ```text
 ~/.gmail-multi-mcp/
-├── gcp-oauth.keys.json     # Default OAuth client secret (chmod 0600)
+├── gcp_client_secret.json  # Default OAuth client secret (chmod 0600)
 ├── accounts.json           # Account registry and metadata (chmod 0600)
 └── tokens/                 # Encrypted OAuth refresh tokens per account (chmod 0600)
     ├── personal.json
