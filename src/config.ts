@@ -107,7 +107,10 @@ export interface OAuthCredentialsFile {
 }
 
 export function loadOAuthKeys(customPath?: string): OAuthCredentialsFile {
-  const keyPath = customPath || getDefaultOAuthKeyPath();
+  const registryDefault = fs.existsSync(getAccountsJsonPath())
+    ? loadRegistry().defaultOAuthKeyPath
+    : undefined;
+  const keyPath = customPath || registryDefault || getDefaultOAuthKeyPath();
   if (!fs.existsSync(keyPath)) {
     throw new Error(
       `Google OAuth Desktop client keys file not found at: ${keyPath}\n` +
