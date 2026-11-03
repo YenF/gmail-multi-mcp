@@ -97,15 +97,24 @@ export async function handleAuthAdd(options: {
           const authError = parsedUrl.searchParams.get('error');
 
           if (authError) {
-            res.writeHead(400, { 'Content-Type': 'text/html; charset=utf-8' });
+            res.writeHead(400, {
+              'Content-Type': 'text/html; charset=utf-8',
+              'Connection': 'close',
+            });
             res.end(`<h2>Authentication Failed</h2><p>${authError}</p>`);
+            if (typeof (server as any).closeAllConnections === 'function') {
+              (server as any).closeAllConnections();
+            }
             server.close();
             reject(new Error(`OAuth Error: ${authError}`));
             return;
           }
 
           if (authCode) {
-            res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+            res.writeHead(200, {
+              'Content-Type': 'text/html; charset=utf-8',
+              'Connection': 'close',
+            });
             res.end(`
               <html>
                 <body style="font-family: sans-serif; text-align: center; padding: 50px;">
@@ -114,6 +123,9 @@ export async function handleAuthAdd(options: {
                 </body>
               </html>
             `);
+            if (typeof (server as any).closeAllConnections === 'function') {
+              (server as any).closeAllConnections();
+            }
             server.close();
             resolve(authCode);
             return;
@@ -162,6 +174,7 @@ export async function handleAuthAdd(options: {
   console.log(`  Permission: ${permission}`);
   console.log(`  Token:      ${tokenPath}`);
   console.log(`\nThis account is now immediately available in your MCP tools without restarting.`);
+  process.exit(0);
 }
 
 export function handleAuthList(): void {
